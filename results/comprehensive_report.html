@@ -1,0 +1,123 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Sports Sponsorship Sentiment Analysis Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+            .header { background-color: #f4f4f4; padding: 20px; border-radius: 10px; text-align: center; }
+            .metric { background-color: #e8f4f8; padding: 15px; margin: 10px 0; border-radius: 5px; }
+            .positive { color: #27ae60; font-weight: bold; }
+            .negative { color: #e74c3c; font-weight: bold; }
+            .neutral { color: #7f8c8d; font-weight: bold; }
+            table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .insight { background-color: #fff3cd; padding: 10px; margin: 10px 0; border-left: 4px solid #ffc107; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>🏆 Sports Sponsorship Sentiment Analysis</h1>
+            <h2>ISBA 2411 NLP Project - Rishabh Shah</h2>
+            <p><strong>Report Generated:</strong> 2025-06-07 14:10:49</p>
+        </div>
+        
+        <div class="metric">
+            <h2>📊 Executive Summary</h2>
+            <p><strong>Total Posts Analyzed:</strong> 34</p>
+            <p><strong>Average Sentiment Score:</strong> 0.395 (Range: -1 to +1)</p>
+            <p><strong>Analysis Period:</strong> Last 30 days</p>
+        </div>
+        
+        <div class="metric">
+            <h2>💭 Sentiment Distribution</h2>
+            <p><span class="positive">Positive:</span> 58.8%</p>
+            <p><span class="negative">Negative:</span> 11.8%</p>
+            <p><span class="neutral">Neutral:</span> 29.4%</p>
+        </div>
+        
+        
+        <h3>Platform Analysis</h3>
+        <p><strong>Most Positive Platform:</strong> Reddit (avg sentiment: 0.840)</p>
+        <p><strong>Most Negative Platform:</strong> Twitter (avg sentiment: 0.132)</p>
+        
+        <table border="1" style="border-collapse: collapse; width: 100%;">
+            <tr><th>Platform</th><th>Posts</th><th>Avg Sentiment</th><th>Engagement</th></tr>
+        
+            <tr>
+                <td>Twitter</td>
+                <td>21</td>
+                <td>0.132</td>
+                <td>1771.1</td>
+            </tr>
+            
+            <tr>
+                <td>Reddit</td>
+                <td>10</td>
+                <td>0.840</td>
+                <td>680.3</td>
+            </tr>
+            
+            <tr>
+                <td>Instagram</td>
+                <td>3</td>
+                <td>0.755</td>
+                <td>32390.3</td>
+            </tr>
+            </table>
+        
+        <h3>Sponsorship Type Analysis</h3>
+        <ul>
+        <li><strong>Not Sponsorship:</strong> 27 posts (79.4%)</li><li><strong>Naming Rights:</strong> 4 posts (11.8%)</li><li><strong>General Sponsorship:</strong> 3 posts (8.8%)</li></ul>
+        
+        <div class="metric">
+            <h2>🔍 Key Insights</h2>
+            <div class="insight">
+                <strong>Overall Sentiment:</strong> 
+                Positive fan reception toward sponsorships
+            </div>
+            
+            <div class="insight">
+                <strong>Engagement Pattern:</strong> 
+                High engagement correlates with sentiment intensity
+            </div>
+            
+            <div class="insight">
+                <strong>Platform Recommendation:</strong> 
+                Focus sponsorship announcements on reddit
+            </div>
+        </div>
+        
+        <div class="metric">
+            <h2>📈 Methodology</h2>
+            <p>This analysis used multiple NLP approaches:</p>
+            <ul>
+                <li><strong>VADER Sentiment:</strong> Social media optimized sentiment analysis</li>
+                <li><strong>TextBlob:</strong> Traditional polarity and subjectivity scoring</li>
+                <li><strong>Custom Keywords:</strong> Sports sponsorship specific sentiment terms</li>
+                <li><strong>Ensemble Method:</strong> Weighted combination of all approaches</li>
+                <li><strong>Machine Learning:</strong> TF-IDF vectorization with classification models</li>
+            </ul>
+        </div>
+        
+        <div class="metric">
+            <h2>🎯 Strategic Recommendations</h2>
+            <ul>
+                <li>Leverage positive sentiment in marketing campaigns</li>
+                <li>Focus on jersey partnerships (highest positive sentiment)</li>
+                <li>Monitor social media sentiment before major announcements</li>
+                <li>Engage with fans to build positive sponsorship perception</li>
+            </ul>
+        </div>
+        
+        <div class="metric">
+            <h2>📊 Technical Details</h2>
+            <p><strong>Data Sources:</strong> Twitter, Reddit, Instagram</p>
+            <p><strong>Analysis Methods:</strong> VADER, TextBlob, Custom Sentiment, ML Classification</p>
+            <p><strong>Processing:</strong> Text cleaning, tokenization, lemmatization, TF-IDF vectorization</p>
+            <p><strong>Models:</strong> Logistic Regression, Random Forest, Ensemble Methods</p>
+        </div>
+    </body>
+    </html>
+    
