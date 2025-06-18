@@ -1,387 +1,789 @@
+"""
+Advanced Keyword Sentiment Scorer and Visualizer
+ISBA 2411 - Rishabh Shah
+
+Creates detailed sentiment scores for individual words and phrases with visualization
+Shows how much each keyword contributes to positive/negative sentiment
+"""
+
 import pandas as pd
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_selection import chi2
-from collections import Counter, defaultdict
 import matplotlib.pyplot as plt
 import seaborn as sns
-from wordcloud import WordCloud
+from collections import Counter, defaultdict
 import re
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from typing import Dict, List, Tuple, Optional
 import logging
+from wordcloud import WordCloud
+import plotly.graph_objects as go
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.offline as pyo
 
-# Set up logging
+# NLP libraries
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.util import ngrams
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_selection import chi2
+from textblob import TextBlob
+
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class SentimentKeywordAnalyzer:
-    """
-    Analyzes keywords and posts that drive sentiment classifications
-    """
+class KeywordSentimentScorer:
+    """Advanced keyword sentiment analysis with detailed scoring and visualization"""
     
-    def __init__(self, df, text_column='processed_text', sentiment_column='ensemble_sentiment'):
+    def __init__(self, df, config=None):
         self.df = df
-        self.text_column = text_column
-        self.sentiment_column = sentiment_column
+        self.config = config
         
-        # Download required NLTK data
-        try:
-            nltk.data.find('tokenizers/punkt')
-            nltk.data.find('corpora/stopwords')
-        except LookupError:
-            nltk.download('punkt')
-            nltk.download('stopwords')
+        # Initialize sentiment analyzer
+        self.sia = SentimentIntensityAnalyzer()
         
+        # Stop words
         self.stop_words = set(stopwords.words('english'))
-        # Add sports-specific stopwords
-        self.stop_words.update(['team', 'game', 'player', 'sport', 'fan', 'fans'])
+        self.sports_stopwords = {'team', 'teams', 'game', 'games', 'player', 'players'}
         
-    def extract_sentiment_keywords(self, max_features=1000, ngram_range=(1, 2)):
-        """
-        Extract keywords most associated with each sentiment using TF-IDF and Chi-square
-        """
-        logger.info("Extracting sentiment-specific keywords...")
+        # Keep important sentiment and domain words
+        self.keep_words = {
+            'sponsor', 'sponsorship', 'partnership', 'deal', 'nike', 'adidas', 'emirates',
+            'good', 'bad', 'great', 'terrible', 'love', 'hate', 'amazing', 'awful',
+            'excited', 'disappointed', 'brilliant', 'disgusting', 'perfect', 'horrible'
+        }
         
-        # Create TF-IDF vectorizer
-        vectorizer = TfidfVectorizer(
-            max_features=max_features,
-            ngram_range=ngram_range,
-            stop_words='english',
-            min_df=2,
-            max_df=0.8
-        )
+        # Enhanced sports sponsorship lexicon with detailed scoring
+        self.detailed_lexicon = self._create_detailed_lexicon()
         
-        # Fit on all text
-        X = vectorizer.fit_transform(self.df[self.text_column].fillna(''))
-        feature_names = vectorizer.get_feature_names_out()
+        # Results storage
+        self.keyword_scores = {}
+        self.phrase_scores = {}
+        self.context_scores = {}
         
-        # Get sentiment labels and encode them
-        y = self.df[self.sentiment_column]
-        unique_sentiments = list(y.unique())
-        
-        # If we have less than 2 classes, we can't do chi-square
-        if len(unique_sentiments) < 2:
-            logger.warning("Less than 2 sentiment classes found. Using frequency-based analysis instead.")
-            return self._fallback_keyword_extraction(unique_sentiments[0])
-        
-        # Encode labels as numbers for chi2
-        from sklearn.preprocessing import LabelEncoder
-        le = LabelEncoder()
-        y_encoded = le.fit_transform(y)
-        
-        # Calculate chi-square scores
-        chi2_scores, p_values = chi2(X, y_encoded)
-        
-        # Create results dictionary
-        sentiment_keywords = {}
-        
-        for i, sentiment in enumerate(unique_sentiments):
-            # Handle different shapes of chi2_scores
-            if len(unique_sentiments) == 2:
-                # For binary classification, chi2 returns 1D array
-                scores = chi2_scores
-                p_vals = p_values
-            else:
-                # For multi-class, chi2 returns 2D array
-                scores = chi2_scores[:, i] if chi2_scores.ndim > 1 else chi2_scores
-                p_vals = p_values[:, i] if p_values.ndim > 1 else p_values
-            
-            # Get top keywords for this sentiment
-            if len(scores) > 0:
-                top_indices = np.argsort(scores)[-min(50, len(scores)):][::-1]
-                
-                sentiment_keywords[sentiment] = {
-                    'keywords': [feature_names[idx] for idx in top_indices],
-                    'scores': [float(scores[idx]) for idx in top_indices],
-                    'p_values': [float(p_vals[idx]) for idx in top_indices]
-                }
-            else:
-                sentiment_keywords[sentiment] = {
-                    'keywords': [],
-                    'scores': [],
-                    'p_values': []
-                }
-        
-        return sentiment_keywords
-    
-    def _fallback_keyword_extraction(self, sentiment):
-        """Fallback method when chi-square isn't applicable"""
-        logger.info("Using TF-IDF scores as fallback...")
-        
-        vectorizer = TfidfVectorizer(
-            max_features=1000,
-            ngram_range=(1, 2),
-            stop_words='english',
-            min_df=2,
-            max_df=0.8
-        )
-        
-        X = vectorizer.fit_transform(self.df[self.text_column].fillna(''))
-        feature_names = vectorizer.get_feature_names_out()
-        
-        # Get mean TF-IDF scores
-        mean_scores = np.array(X.mean(axis=0)).flatten()
-        top_indices = np.argsort(mean_scores)[-50:][::-1]
-        
+    def _create_detailed_lexicon(self):
+        """Create detailed sentiment lexicon with explanations"""
         return {
-            sentiment: {
-                'keywords': [feature_names[i] for i in top_indices],
-                'scores': [float(mean_scores[i]) for i in top_indices],
-                'p_values': [0.0] * len(top_indices)  # Not applicable for TF-IDF
-            }
+            # Very Positive (+2.0 to +1.5)
+            'amazing': {'score': 2.0, 'category': 'very_positive', 'context': 'enthusiasm'},
+            'incredible': {'score': 2.0, 'category': 'very_positive', 'context': 'amazement'},
+            'fantastic': {'score': 1.8, 'category': 'very_positive', 'context': 'enthusiasm'},
+            'brilliant': {'score': 1.8, 'category': 'very_positive', 'context': 'admiration'},
+            'perfect': {'score': 1.7, 'category': 'very_positive', 'context': 'satisfaction'},
+            'outstanding': {'score': 1.7, 'category': 'very_positive', 'context': 'excellence'},
+            'phenomenal': {'score': 1.9, 'category': 'very_positive', 'context': 'amazement'},
+            'superb': {'score': 1.6, 'category': 'very_positive', 'context': 'quality'},
+            
+            # Positive (+1.4 to +0.5)
+            'excellent': {'score': 1.4, 'category': 'positive', 'context': 'quality'},
+            'great': {'score': 1.2, 'category': 'positive', 'context': 'general_approval'},
+            'good': {'score': 1.0, 'category': 'positive', 'context': 'general_approval'},
+            'excited': {'score': 1.3, 'category': 'positive', 'context': 'anticipation'},
+            'happy': {'score': 1.1, 'category': 'positive', 'context': 'emotion'},
+            'pleased': {'score': 1.0, 'category': 'positive', 'context': 'satisfaction'},
+            'smart': {'score': 0.8, 'category': 'positive', 'context': 'intelligence'},
+            'strategic': {'score': 0.7, 'category': 'positive', 'context': 'business'},
+            'valuable': {'score': 0.9, 'category': 'positive', 'context': 'worth'},
+            'beneficial': {'score': 0.8, 'category': 'positive', 'context': 'advantage'},
+            'impressive': {'score': 1.2, 'category': 'positive', 'context': 'admiration'},
+            'professional': {'score': 0.6, 'category': 'positive', 'context': 'quality'},
+            'successful': {'score': 1.0, 'category': 'positive', 'context': 'achievement'},
+            'strong': {'score': 0.7, 'category': 'positive', 'context': 'power'},
+            'solid': {'score': 0.6, 'category': 'positive', 'context': 'reliability'},
+            'love': {'score': 1.4, 'category': 'positive', 'context': 'emotion'},
+            'like': {'score': 0.8, 'category': 'positive', 'context': 'preference'},
+            
+            # Sports-specific positive
+            'loyal': {'score': 0.8, 'category': 'positive', 'context': 'sports_values'},
+            'prestigious': {'score': 1.0, 'category': 'positive', 'context': 'status'},
+            'iconic': {'score': 1.1, 'category': 'positive', 'context': 'recognition'},
+            'legendary': {'score': 1.3, 'category': 'positive', 'context': 'legacy'},
+            'champion': {'score': 1.2, 'category': 'positive', 'context': 'achievement'},
+            'winning': {'score': 1.0, 'category': 'positive', 'context': 'success'},
+            'trophy': {'score': 0.9, 'category': 'positive', 'context': 'achievement'},
+            'glory': {'score': 1.1, 'category': 'positive', 'context': 'honor'},
+            'pride': {'score': 1.0, 'category': 'positive', 'context': 'emotion'},
+            
+            # Sponsorship-specific positive
+            'partnership': {'score': 0.5, 'category': 'positive', 'context': 'collaboration'},
+            'collaboration': {'score': 0.6, 'category': 'positive', 'context': 'cooperation'},
+            'investment': {'score': 0.7, 'category': 'positive', 'context': 'commitment'},
+            'support': {'score': 0.8, 'category': 'positive', 'context': 'backing'},
+            'commitment': {'score': 0.7, 'category': 'positive', 'context': 'dedication'},
+            'backing': {'score': 0.6, 'category': 'positive', 'context': 'support'},
+            'endorsement': {'score': 0.5, 'category': 'positive', 'context': 'approval'},
+            
+            # Neutral (0.4 to -0.4)
+            'announced': {'score': 0.0, 'category': 'neutral', 'context': 'factual'},
+            'confirmed': {'score': 0.0, 'category': 'neutral', 'context': 'factual'},
+            'signed': {'score': 0.0, 'category': 'neutral', 'context': 'factual'},
+            'agreed': {'score': 0.0, 'category': 'neutral', 'context': 'factual'},
+            'extended': {'score': 0.0, 'category': 'neutral', 'context': 'factual'},
+            'renewed': {'score': 0.0, 'category': 'neutral', 'context': 'factual'},
+            'contract': {'score': 0.0, 'category': 'neutral', 'context': 'business'},
+            'deal': {'score': 0.0, 'category': 'neutral', 'context': 'business'},
+            'sponsor': {'score': 0.0, 'category': 'neutral', 'context': 'sponsorship'},
+            'million': {'score': 0.0, 'category': 'neutral', 'context': 'financial'},
+            'billion': {'score': 0.0, 'category': 'neutral', 'context': 'financial'},
+            
+            # Negative (-0.5 to -1.4)
+            'bad': {'score': -1.0, 'category': 'negative', 'context': 'general_disapproval'},
+            'terrible': {'score': -1.3, 'category': 'negative', 'context': 'strong_disapproval'},
+            'awful': {'score': -1.4, 'category': 'negative', 'context': 'strong_disapproval'},
+            'disappointing': {'score': -1.1, 'category': 'negative', 'context': 'unmet_expectations'},
+            'poor': {'score': -0.9, 'category': 'negative', 'context': 'quality'},
+            'weak': {'score': -0.7, 'category': 'negative', 'context': 'strength'},
+            'concerning': {'score': -0.8, 'category': 'negative', 'context': 'worry'},
+            'problematic': {'score': -1.0, 'category': 'negative', 'context': 'issues'},
+            'questionable': {'score': -0.8, 'category': 'negative', 'context': 'doubt'},
+            'overpriced': {'score': -0.9, 'category': 'negative', 'context': 'value'},
+            'expensive': {'score': -0.6, 'category': 'negative', 'context': 'cost'},
+            'waste': {'score': -1.2, 'category': 'negative', 'context': 'inefficiency'},
+            'unnecessary': {'score': -0.7, 'category': 'negative', 'context': 'redundancy'},
+            'hate': {'score': -1.4, 'category': 'negative', 'context': 'emotion'},
+            'dislike': {'score': -0.8, 'category': 'negative', 'context': 'preference'},
+            'disappointed': {'score': -1.0, 'category': 'negative', 'context': 'emotion'},
+            
+            # Sports-specific negative
+            'sellout': {'score': -1.3, 'category': 'negative', 'context': 'betrayal'},
+            'commercial': {'score': -0.6, 'category': 'negative', 'context': 'commercialization'},
+            'corporate': {'score': -0.7, 'category': 'negative', 'context': 'impersonal'},
+            'greedy': {'score': -1.2, 'category': 'negative', 'context': 'greed'},
+            'tradition': {'score': -0.5, 'category': 'negative', 'context': 'loss_of_heritage'},
+            'history': {'score': -0.4, 'category': 'negative', 'context': 'loss_of_heritage'},
+            'soul': {'score': -0.8, 'category': 'negative', 'context': 'loss_of_identity'},
+            'authentic': {'score': -0.6, 'category': 'negative', 'context': 'loss_of_authenticity'},
+            
+            # Very Negative (-1.5 to -2.0)
+            'disgusting': {'score': -2.0, 'category': 'very_negative', 'context': 'revulsion'},
+            'horrible': {'score': -1.8, 'category': 'very_negative', 'context': 'extreme_disapproval'},
+            'pathetic': {'score': -1.7, 'category': 'very_negative', 'context': 'contempt'},
+            'ridiculous': {'score': -1.5, 'category': 'very_negative', 'context': 'absurdity'},
+            'outrageous': {'score': -1.8, 'category': 'very_negative', 'context': 'anger'},
+            'insulting': {'score': -1.6, 'category': 'very_negative', 'context': 'offense'},
+            'betrayal': {'score': -1.9, 'category': 'very_negative', 'context': 'trust_violation'},
+            'disgraceful': {'score': -1.7, 'category': 'very_negative', 'context': 'shame'},
+            'shameful': {'score': -1.6, 'category': 'very_negative', 'context': 'dishonor'},
+            'unacceptable': {'score': -1.5, 'category': 'very_negative', 'context': 'rejection'}
         }
     
-    def analyze_keyword_frequency(self):
-        """
-        Analyze frequency of keywords within each sentiment class
-        """
-        logger.info("Analyzing keyword frequencies by sentiment...")
+    def analyze_keyword_sentiments(self):
+        """Comprehensive keyword sentiment analysis"""
+        logger.info("🔍 Analyzing keyword-level sentiments...")
         
-        keyword_freq = {}
+        all_keywords = {}
+        phrase_sentiments = {}
         
-        for sentiment in self.df[self.sentiment_column].unique():
-            # Get text for this sentiment
-            sentiment_texts = self.df[self.df[self.sentiment_column] == sentiment][self.text_column]
+        for idx, row in self.df.iterrows():
+            text = str(row.get('text', ''))
+            overall_sentiment = row.get('ensemble_sentiment', 'neutral')
+            sentiment_score = row.get('ensemble_score', 0)
             
-            # Combine all text
-            combined_text = ' '.join(sentiment_texts.fillna('').astype(str))
-            
-            # Tokenize and count
-            tokens = word_tokenize(combined_text.lower())
-            tokens = [token for token in tokens if token.isalpha() and token not in self.stop_words]
-            
-            # Count frequencies
-            freq_dist = Counter(tokens)
-            keyword_freq[sentiment] = freq_dist.most_common(30)
-        
-        return keyword_freq
-    
-    def get_representative_posts(self, n_posts=5):
-        """
-        Get most representative posts for each sentiment category
-        """
-        logger.info("Extracting representative posts for each sentiment...")
-        
-        representative_posts = {}
-        
-        for sentiment in self.df[self.sentiment_column].unique():
-            sentiment_df = self.df[self.df[self.sentiment_column] == sentiment]
-            
-            # Sort by confidence/intensity (using VADER compound score as proxy)
-            if 'vader_compound' in sentiment_df.columns:
-                if sentiment == 'positive':
-                    top_posts = sentiment_df.nlargest(n_posts, 'vader_compound')
-                elif sentiment == 'negative':
-                    top_posts = sentiment_df.nsmallest(n_posts, 'vader_compound')
-                else:  # neutral
-                    # Get posts closest to 0
-                    top_posts = sentiment_df.loc[sentiment_df['vader_compound'].abs().nsmallest(n_posts).index]
-            else:
-                # Random sample if no confidence scores
-                top_posts = sentiment_df.sample(min(n_posts, len(sentiment_df)))
-            
-            representative_posts[sentiment] = top_posts[['text', 'vader_compound', 'platform']].to_dict('records')
-        
-        return representative_posts
-    
-    def create_sentiment_wordclouds(self, output_dir='results'):
-        """
-        Create word clouds for each sentiment
-        """
-        logger.info("Creating sentiment-specific word clouds...")
-        
-        fig, axes = plt.subplots(1, 3, figsize=(20, 6))
-        sentiments = ['positive', 'negative', 'neutral']
-        colormaps = ['Greens', 'Reds', 'Greys']
-        
-        for i, sentiment in enumerate(sentiments):
-            if sentiment in self.df[self.sentiment_column].values:
-                # Get text for this sentiment
-                sentiment_texts = self.df[self.df[self.sentiment_column] == sentiment][self.text_column]
-                combined_text = ' '.join(sentiment_texts.fillna('').astype(str))
+            # Analyze individual words
+            word_sentiments = self._analyze_words(text, overall_sentiment, sentiment_score)
+            for word, data in word_sentiments.items():
+                if word not in all_keywords:
+                    all_keywords[word] = {
+                        'total_score': 0,
+                        'frequency': 0,
+                        'contexts': [],
+                        'lexicon_score': data.get('lexicon_score', 0),
+                        'vader_score': data.get('vader_score', 0),
+                        'sentiment_distribution': {'positive': 0, 'negative': 0, 'neutral': 0}
+                    }
                 
-                # Create word cloud
-                wordcloud = WordCloud(
-                    width=800, height=400,
-                    background_color='white',
-                    colormap=colormaps[i],
-                    max_words=100,
-                    stopwords=self.stop_words
-                ).generate(combined_text)
-                
-                axes[i].imshow(wordcloud, interpolation='bilinear')
-                axes[i].set_title(f'{sentiment.title()} Sentiment Keywords', fontsize=14, fontweight='bold')
-                axes[i].axis('off')
-            else:
-                axes[i].text(0.5, 0.5, f'No {sentiment} posts', ha='center', va='center')
-                axes[i].set_title(f'{sentiment.title()} Sentiment Keywords', fontsize=14)
-                axes[i].axis('off')
+                all_keywords[word]['total_score'] += data['contribution']
+                all_keywords[word]['frequency'] += 1
+                all_keywords[word]['contexts'].append(data['context'])
+                all_keywords[word]['sentiment_distribution'][overall_sentiment] += 1
+            
+            # Analyze phrases (bigrams and trigrams)
+            phrase_sentiments.update(self._analyze_phrases(text, sentiment_score))
+        
+        # Calculate average scores and confidence
+        for word, data in all_keywords.items():
+            data['average_score'] = data['total_score'] / data['frequency']
+            data['confidence'] = min(data['frequency'] / 10, 1.0)  # Higher confidence with more occurrences
+            data['dominant_sentiment'] = max(data['sentiment_distribution'], 
+                                           key=data['sentiment_distribution'].get)
+        
+        self.keyword_scores = all_keywords
+        self.phrase_scores = phrase_sentiments
+        
+        return all_keywords, phrase_sentiments
+    
+    def _analyze_words(self, text, overall_sentiment, sentiment_score):
+        """Analyze individual words in text"""
+        word_sentiments = {}
+        
+        # Tokenize and clean
+        words = word_tokenize(text.lower())
+        words = [w for w in words if w.isalpha() and len(w) > 2]
+        
+        for word in words:
+            if word in self.stop_words and word not in self.keep_words:
+                continue
+            
+            word_data = {
+                'word': word,
+                'lexicon_score': 0,
+                'vader_score': 0,
+                'context_score': 0,
+                'contribution': 0,
+                'context': self._get_word_context(text, word)
+            }
+            
+            # Get lexicon score
+            if word in self.detailed_lexicon:
+                word_data['lexicon_score'] = self.detailed_lexicon[word]['score']
+            
+            # Get VADER score for individual word
+            if word in self.sia.lexicon:
+                word_data['vader_score'] = self.sia.lexicon[word]
+            
+            # Calculate context-based contribution
+            word_context = word_data['context']
+            if word_context:
+                context_sentiment = TextBlob(word_context).sentiment.polarity
+                word_data['context_score'] = context_sentiment
+            
+            # Calculate overall contribution to sentence sentiment
+            # Weight: 40% lexicon, 30% VADER, 30% context
+            word_contribution = (
+                0.4 * word_data['lexicon_score'] +
+                0.3 * word_data['vader_score'] +
+                0.3 * word_data['context_score']
+            )
+            
+            word_data['contribution'] = word_contribution
+            word_sentiments[word] = word_data
+        
+        return word_sentiments
+    
+    def _analyze_phrases(self, text, sentiment_score):
+        """Analyze sentiment of phrases (bigrams and trigrams)"""
+        phrase_sentiments = {}
+        
+        words = word_tokenize(text.lower())
+        words = [w for w in words if w.isalpha()]
+        
+        # Analyze bigrams
+        for bigram in ngrams(words, 2):
+            phrase = ' '.join(bigram)
+            if any(word in self.stop_words for word in bigram):
+                continue
+            
+            phrase_sentiment = TextBlob(phrase).sentiment.polarity
+            phrase_sentiments[phrase] = {
+                'score': phrase_sentiment,
+                'type': 'bigram',
+                'frequency': 1
+            }
+        
+        # Analyze trigrams
+        for trigram in ngrams(words, 3):
+            phrase = ' '.join(trigram)
+            if len([w for w in trigram if w in self.stop_words]) > 1:
+                continue
+            
+            phrase_sentiment = TextBlob(phrase).sentiment.polarity
+            phrase_sentiments[phrase] = {
+                'score': phrase_sentiment,
+                'type': 'trigram',
+                'frequency': 1
+            }
+        
+        return phrase_sentiments
+    
+    def _get_word_context(self, text, word, window=3):
+        """Get context window around a word"""
+        words = text.lower().split()
+        try:
+            word_indices = [i for i, w in enumerate(words) if word in w]
+            if word_indices:
+                idx = word_indices[0]
+                start = max(0, idx - window)
+                end = min(len(words), idx + window + 1)
+                return ' '.join(words[start:end])
+        except:
+            pass
+        return ''
+    
+    def create_keyword_sentiment_visualization(self, output_dir='results'):
+        """Create comprehensive keyword sentiment visualizations"""
+        logger.info("📊 Creating keyword sentiment visualizations...")
+        
+        if not self.keyword_scores:
+            self.analyze_keyword_sentiments()
+        
+        # Prepare data for visualization
+        viz_data = []
+        for word, data in self.keyword_scores.items():
+            if data['frequency'] >= 2:  # Only words that appear multiple times
+                viz_data.append({
+                    'word': word,
+                    'average_score': data['average_score'],
+                    'frequency': data['frequency'],
+                    'confidence': data['confidence'],
+                    'lexicon_score': data['lexicon_score'],
+                    'vader_score': data['vader_score'],
+                    'dominant_sentiment': data['dominant_sentiment'],
+                    'total_score': data['total_score']
+                })
+        
+        viz_df = pd.DataFrame(viz_data)
+        
+        if len(viz_df) == 0:
+            logger.warning("No sufficient keyword data for visualization")
+            return
+        
+        # Sort by absolute average score
+        viz_df = viz_df.reindex(viz_df['average_score'].abs().sort_values(ascending=False).index)
+        
+        # Create multiple visualizations
+        fig = make_subplots(
+            rows=2, cols=2,
+            subplot_titles=('Keyword Sentiment Scores', 'Frequency vs Sentiment', 
+                          'Top Positive Keywords', 'Top Negative Keywords'),
+            specs=[[{"secondary_y": True}, {"type": "scatter"}],
+                   [{"type": "bar"}, {"type": "bar"}]]
+        )
+        
+        # 1. Keyword sentiment scores with confidence
+        top_words = viz_df.head(20)
+        
+        fig.add_trace(
+            go.Bar(
+                x=top_words['word'],
+                y=top_words['average_score'],
+                name='Sentiment Score',
+                marker=dict(
+                    color=top_words['average_score'],
+                    colorscale='RdYlGn',
+                    colorbar=dict(title="Sentiment Score")
+                ),
+                hovertemplate='<b>%{x}</b><br>Score: %{y:.3f}<br>Frequency: %{customdata}<extra></extra>',
+                customdata=top_words['frequency']
+            ),
+            row=1, col=1
+        )
+        
+        # Add confidence line
+        fig.add_trace(
+            go.Scatter(
+                x=top_words['word'],
+                y=top_words['confidence'],
+                mode='lines+markers',
+                name='Confidence',
+                yaxis='y2',
+                line=dict(color='orange', width=2)
+            ),
+            row=1, col=1, secondary_y=True
+        )
+        
+        # 2. Frequency vs Sentiment scatter
+        fig.add_trace(
+            go.Scatter(
+                x=viz_df['frequency'],
+                y=viz_df['average_score'],
+                mode='markers',
+                text=viz_df['word'],
+                name='Keywords',
+                marker=dict(
+                    size=viz_df['confidence']*20,
+                    color=viz_df['average_score'],
+                    colorscale='RdYlGn',
+                    showscale=True
+                ),
+                hovertemplate='<b>%{text}</b><br>Frequency: %{x}<br>Score: %{y:.3f}<extra></extra>'
+            ),
+            row=1, col=2
+        )
+        
+        # 3. Top positive keywords
+        positive_words = viz_df[viz_df['average_score'] > 0].head(10)
+        fig.add_trace(
+            go.Bar(
+                x=positive_words['average_score'],
+                y=positive_words['word'],
+                orientation='h',
+                name='Positive Keywords',
+                marker=dict(color='green', opacity=0.7),
+                hovertemplate='<b>%{y}</b><br>Score: %{x:.3f}<br>Frequency: %{customdata}<extra></extra>',
+                customdata=positive_words['frequency']
+            ),
+            row=2, col=1
+        )
+        
+        # 4. Top negative keywords
+        negative_words = viz_df[viz_df['average_score'] < 0].head(10)
+        fig.add_trace(
+            go.Bar(
+                x=negative_words['average_score'],
+                y=negative_words['word'],
+                orientation='h',
+                name='Negative Keywords',
+                marker=dict(color='red', opacity=0.7),
+                hovertemplate='<b>%{y}</b><br>Score: %{x:.3f}<br>Frequency: %{customdata}<extra></extra>',
+                customdata=negative_words['frequency']
+            ),
+            row=2, col=2
+        )
+        
+        # Update layout
+        fig.update_layout(
+            height=800,
+            title_text="Keyword Sentiment Analysis Dashboard",
+            title_font_size=16,
+            showlegend=True
+        )
+        
+        # Update x-axis labels for readability
+        fig.update_xaxes(tickangle=45, row=1, col=1)
+        
+        # Save interactive plot
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+        fig.write_html(f'{output_dir}/keyword_sentiment_dashboard.html')
+        
+        # Create static matplotlib version for backup
+        self._create_static_keyword_plot(viz_df, output_dir)
+        
+        logger.info(f"Keyword sentiment visualizations saved to {output_dir}/")
+    
+    def _create_static_keyword_plot(self, viz_df, output_dir):
+        """Create static matplotlib version of keyword sentiment plot"""
+        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+        fig.suptitle('Keyword Sentiment Analysis', fontsize=16, fontweight='bold')
+        
+        # 1. Top sentiment words
+        top_words = viz_df.head(15)
+        colors = ['green' if score > 0 else 'red' if score < 0 else 'gray' 
+                 for score in top_words['average_score']]
+        
+        axes[0, 0].barh(range(len(top_words)), top_words['average_score'], color=colors, alpha=0.7)
+        axes[0, 0].set_yticks(range(len(top_words)))
+        axes[0, 0].set_yticklabels(top_words['word'])
+        axes[0, 0].set_xlabel('Average Sentiment Score')
+        axes[0, 0].set_title('Top Keywords by Sentiment Impact')
+        axes[0, 0].axvline(x=0, color='black', linestyle='--', alpha=0.5)
+        
+        # 2. Frequency vs sentiment
+        scatter = axes[0, 1].scatter(viz_df['frequency'], viz_df['average_score'], 
+                                   c=viz_df['average_score'], cmap='RdYlGn', 
+                                   s=viz_df['confidence']*100, alpha=0.7)
+        axes[0, 1].set_xlabel('Word Frequency')
+        axes[0, 1].set_ylabel('Average Sentiment Score')
+        axes[0, 1].set_title('Frequency vs Sentiment (size=confidence)')
+        axes[0, 1].axhline(y=0, color='black', linestyle='--', alpha=0.5)
+        plt.colorbar(scatter, ax=axes[0, 1], label='Sentiment Score')
+        
+        # 3. Positive word cloud
+        positive_words = viz_df[viz_df['average_score'] > 0]
+        if len(positive_words) > 0:
+            pos_text = ' '.join([f"{row['word']} " * int(row['frequency']) 
+                               for _, row in positive_words.iterrows()])
+            try:
+                wordcloud_pos = WordCloud(width=400, height=300, background_color='white',
+                                        colormap='Greens').generate(pos_text)
+                axes[1, 0].imshow(wordcloud_pos, interpolation='bilinear')
+                axes[1, 0].set_title('Positive Keywords Cloud')
+                axes[1, 0].axis('off')
+            except:
+                axes[1, 0].text(0.5, 0.5, 'Positive Keywords\n' + ', '.join(positive_words['word'].head(10)), 
+                              ha='center', va='center', wrap=True)
+                axes[1, 0].set_title('Positive Keywords')
+        
+        # 4. Negative word cloud  
+        negative_words = viz_df[viz_df['average_score'] < 0]
+        if len(negative_words) > 0:
+            neg_text = ' '.join([f"{row['word']} " * int(row['frequency']) 
+                               for _, row in negative_words.iterrows()])
+            try:
+                wordcloud_neg = WordCloud(width=400, height=300, background_color='white',
+                                        colormap='Reds').generate(neg_text)
+                axes[1, 1].imshow(wordcloud_neg, interpolation='bilinear')
+                axes[1, 1].set_title('Negative Keywords Cloud')
+                axes[1, 1].axis('off')
+            except:
+                axes[1, 1].text(0.5, 0.5, 'Negative Keywords\n' + ', '.join(negative_words['word'].head(10)), 
+                              ha='center', va='center', wrap=True)
+                axes[1, 1].set_title('Negative Keywords')
         
         plt.tight_layout()
-        plt.savefig(f'{output_dir}/sentiment_wordclouds.png', dpi=300, bbox_inches='tight')
+        plt.savefig(f'{output_dir}/keyword_sentiment_static.png', dpi=300, bbox_inches='tight')
         plt.close()
-        
-        logger.info(f"Word clouds saved to {output_dir}/sentiment_wordclouds.png")
     
-    def analyze_sponsorship_keywords(self):
-        """
-        Analyze keywords specific to sponsorship-related posts
-        """
-        logger.info("Analyzing sponsorship-specific keywords...")
+    def generate_keyword_sentiment_report(self, output_dir='results'):
+        """Generate comprehensive keyword sentiment report"""
+        logger.info("📄 Generating keyword sentiment report...")
         
-        if 'sponsorship_type' not in self.df.columns:
-            logger.warning("No sponsorship_type column found")
-            return {}
+        if not self.keyword_scores:
+            self.analyze_keyword_sentiments()
         
-        sponsorship_keywords = {}
+        # Prepare summary statistics
+        total_keywords = len(self.keyword_scores)
+        positive_keywords = len([k for k, v in self.keyword_scores.items() if v['average_score'] > 0])
+        negative_keywords = len([k for k, v in self.keyword_scores.items() if v['average_score'] < 0])
+        neutral_keywords = total_keywords - positive_keywords - negative_keywords
         
-        # Get only sponsorship posts (not 'not_sponsorship')
-        sponsorship_df = self.df[self.df['sponsorship_type'] != 'not_sponsorship']
+        # Get top keywords by category
+        sorted_keywords = sorted(self.keyword_scores.items(), 
+                               key=lambda x: abs(x[1]['average_score']), reverse=True)
         
-        for stype in sponsorship_df['sponsorship_type'].unique():
-            type_df = sponsorship_df[sponsorship_df['sponsorship_type'] == stype]
-            
-            # Analyze sentiment within this sponsorship type
-            sentiment_analysis = {}
-            for sentiment in type_df[self.sentiment_column].unique():
-                sentiment_texts = type_df[type_df[self.sentiment_column] == sentiment][self.text_column]
-                combined_text = ' '.join(sentiment_texts.fillna('').astype(str))
-                
-                # Extract keywords
-                tokens = word_tokenize(combined_text.lower())
-                tokens = [token for token in tokens if token.isalpha() and token not in self.stop_words]
-                
-                sentiment_analysis[sentiment] = Counter(tokens).most_common(15)
-            
-            sponsorship_keywords[stype] = sentiment_analysis
+        top_positive = [(k, v) for k, v in sorted_keywords if v['average_score'] > 0][:10]
+        top_negative = [(k, v) for k, v in sorted_keywords if v['average_score'] < 0][:10]
+        most_frequent = sorted(self.keyword_scores.items(), 
+                             key=lambda x: x[1]['frequency'], reverse=True)[:15]
         
-        return sponsorship_keywords
-    
-    def generate_keyword_report(self, output_dir='results'):
-        """
-        Generate comprehensive keyword analysis report
-        """
-        logger.info("Generating keyword analysis report...")
-        
-        # Get all analyses
-        sentiment_keywords = self.extract_sentiment_keywords()
-        keyword_freq = self.analyze_keyword_frequency()
-        representative_posts = self.get_representative_posts()
-        sponsorship_keywords = self.analyze_sponsorship_keywords()
-        
-        # Create detailed HTML report
+        # Generate HTML report
         html_content = f"""
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Keyword and Post Analysis Report</title>
+            <title>Keyword Sentiment Analysis Report</title>
             <style>
                 body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }}
                 .header {{ background-color: #f4f4f4; padding: 20px; border-radius: 10px; text-align: center; }}
-                .section {{ margin: 20px 0; padding: 15px; border-radius: 8px; }}
+                .summary {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }}
+                .metric-card {{ background: #e8f4f8; padding: 15px; border-radius: 8px; text-align: center; }}
+                .metric-value {{ font-size: 2em; font-weight: bold; color: #007bff; }}
+                .keyword-section {{ margin: 20px 0; padding: 15px; border-radius: 8px; }}
                 .positive {{ background-color: #d4edda; border-left: 4px solid #28a745; }}
                 .negative {{ background-color: #f8d7da; border-left: 4px solid #dc3545; }}
                 .neutral {{ background-color: #e2e3e5; border-left: 4px solid #6c757d; }}
-                .keyword {{ display: inline-block; background-color: #007bff; color: white; padding: 3px 8px; margin: 2px; border-radius: 12px; font-size: 0.9em; }}
-                .post {{ background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; font-style: italic; }}
-                table {{ border-collapse: collapse; width: 100%; margin: 10px 0; }}
-                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-                th {{ background-color: #f2f2f2; }}
-                .score {{ font-weight: bold; color: #007bff; }}
+                .keyword-table {{ width: 100%; border-collapse: collapse; margin: 10px 0; }}
+                .keyword-table th, .keyword-table td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                .keyword-table th {{ background-color: #f2f2f2; }}
+                .score-positive {{ color: #28a745; font-weight: bold; }}
+                .score-negative {{ color: #dc3545; font-weight: bold; }}
+                .score-neutral {{ color: #6c757d; font-weight: bold; }}
+                .confidence-high {{ background-color: #d4edda; }}
+                .confidence-medium {{ background-color: #fff3cd; }}
+                .confidence-low {{ background-color: #f8d7da; }}
+                .keyword-detail {{ background-color: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 5px; }}
             </style>
         </head>
         <body>
             <div class="header">
-                <h1>🔍 Keyword & Post Analysis Report</h1>
-                <h2>What Drives Fan Sentiment in Sports Sponsorships</h2>
-                <p>Understanding the language and content behind sentiment classifications</p>
+                <h1>🔍 Keyword Sentiment Analysis Report</h1>
+                <h2>Individual Word and Phrase Sentiment Scoring</h2>
+                <p>Understanding which words drive positive and negative sentiment in sports sponsorship discussions</p>
+            </div>
+            
+            <div class="summary">
+                <div class="metric-card">
+                    <div class="metric-value">{total_keywords}</div>
+                    <div>Total Keywords Analyzed</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #28a745;">{positive_keywords}</div>
+                    <div>Positive Keywords</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #dc3545;">{negative_keywords}</div>
+                    <div>Negative Keywords</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #6c757d;">{neutral_keywords}</div>
+                    <div>Neutral Keywords</div>
+                </div>
             </div>
         """
         
-        # Add sentiment keyword analysis
-        for sentiment in ['positive', 'negative', 'neutral']:
-            if sentiment in sentiment_keywords:
-                html_content += f"""
-                <div class="section {sentiment}">
-                    <h2>📊 {sentiment.title()} Sentiment Keywords</h2>
-                    <h3>Top Discriminative Keywords:</h3>
-                    <div>
-                """
-                
-                # Add top keywords as tags
-                for keyword in sentiment_keywords[sentiment]['keywords'][:20]:
-                    html_content += f'<span class="keyword">{keyword}</span>'
-                
-                html_content += f"""
-                    </div>
-                    <h3>Most Representative Posts:</h3>
-                """
-                
-                # Add representative posts
-                if sentiment in representative_posts:
-                    for post in representative_posts[sentiment]:
-                        html_content += f"""
-                        <div class="post">
-                            "{post['text'][:300]}{'...' if len(post['text']) > 300 else ''}"
-                            <br><small><strong>Platform:</strong> {post['platform']} | <strong>Sentiment Score:</strong> {post['vader_compound']:.3f}</small>
-                        </div>
-                        """
-                
-                html_content += "</div>"
-        
-        # Add sponsorship-specific analysis
-        if sponsorship_keywords:
-            html_content += """
-            <div class="section">
-                <h2>🎪 Sponsorship Type Keyword Analysis</h2>
-            """
-            
-            for stype, analysis in sponsorship_keywords.items():
-                html_content += f"""
-                <h3>{stype.replace('_', ' ').title()} Sponsorships</h3>
-                <table>
-                    <tr><th>Sentiment</th><th>Top Keywords</th><th>Frequency</th></tr>
-                """
-                
-                for sentiment, keywords in analysis.items():
-                    keyword_list = ', '.join([f"{word} ({count})" for word, count in keywords[:10]])
-                    html_content += f"""
-                    <tr>
-                        <td><strong>{sentiment.title()}</strong></td>
-                        <td>{keyword_list}</td>
-                        <td>{sum([count for word, count in keywords])}</td>
-                    </tr>
-                    """
-                
-                html_content += "</table>"
-            
-            html_content += "</div>"
-        
-        # Add insights section
+        # Add top positive keywords section
         html_content += """
-        <div class="section">
-            <h2>💡 Key Insights</h2>
-            <ul>
-                <li><strong>Positive Drivers:</strong> Look for keywords like partnership, support, excited, great, love</li>
-                <li><strong>Negative Drivers:</strong> Watch for sellout, money, corporate, disappointing, hate</li>
-                <li><strong>Neutral Indicators:</strong> Factual terms like announced, deal, contract, agreement</li>
-                <li><strong>Platform Differences:</strong> Twitter tends to be more emotional, Reddit more analytical</li>
-                <li><strong>Timing Matters:</strong> Initial reactions often more extreme than long-term sentiment</li>
-            </ul>
-        </div>
+            <div class="keyword-section positive">
+                <h2>🟢 Top Positive Sentiment Keywords</h2>
+                <p>Words that most strongly contribute to positive sentiment in sponsorship discussions:</p>
+                <table class="keyword-table">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Sentiment Score</th>
+                        <th>Frequency</th>
+                        <th>Confidence</th>
+                        <th>Context</th>
+                    </tr>
+        """
         
-        <div class="section">
-            <h2>🎯 Recommendations</h2>
-            <ul>
-                <li><strong>Monitor Negative Keywords:</strong> Set up alerts for terms that predict negative sentiment</li>
-                <li><strong>Emphasize Positive Themes:</strong> Use language that historically generates positive responses</li>
-                <li><strong>Address Concerns Proactively:</strong> Respond to common negative themes before they spread</li>
-                <li><strong>Platform-Specific Messaging:</strong> Tailor announcements to each platform's audience</li>
-                <li><strong>Timing Strategy:</strong> Consider when and how to announce sponsorships for maximum positive impact</li>
-            </ul>
-        </div>
+        for word, data in top_positive:
+            confidence_class = ('confidence-high' if data['confidence'] > 0.7 else 
+                              'confidence-medium' if data['confidence'] > 0.4 else 'confidence-low')
+            context = self.detailed_lexicon.get(word, {}).get('context', 'general')
+            
+            html_content += f"""
+                    <tr class="{confidence_class}">
+                        <td><strong>{word}</strong></td>
+                        <td class="score-positive">+{data['average_score']:.3f}</td>
+                        <td>{data['frequency']}</td>
+                        <td>{data['confidence']:.2f}</td>
+                        <td>{context.replace('_', ' ').title()}</td>
+                    </tr>
+            """
         
+        html_content += """
+                </table>
+            </div>
+            
+            <div class="keyword-section negative">
+                <h2>🔴 Top Negative Sentiment Keywords</h2>
+                <p>Words that most strongly contribute to negative sentiment in sponsorship discussions:</p>
+                <table class="keyword-table">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Sentiment Score</th>
+                        <th>Frequency</th>
+                        <th>Confidence</th>
+                        <th>Context</th>
+                    </tr>
+        """
+        
+        for word, data in top_negative:
+            confidence_class = ('confidence-high' if data['confidence'] > 0.7 else 
+                              'confidence-medium' if data['confidence'] > 0.4 else 'confidence-low')
+            context = self.detailed_lexicon.get(word, {}).get('context', 'general')
+            
+            html_content += f"""
+                    <tr class="{confidence_class}">
+                        <td><strong>{word}</strong></td>
+                        <td class="score-negative">{data['average_score']:.3f}</td>
+                        <td>{data['frequency']}</td>
+                        <td>{data['confidence']:.2f}</td>
+                        <td>{context.replace('_', ' ').title()}</td>
+                    </tr>
+            """
+        
+        html_content += """
+                </table>
+            </div>
+            
+            <div class="keyword-section neutral">
+                <h2>📊 Most Frequently Used Keywords</h2>
+                <p>Words that appear most often in sponsorship discussions:</p>
+                <table class="keyword-table">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Frequency</th>
+                        <th>Sentiment Score</th>
+                        <th>Dominant Sentiment</th>
+                        <th>Distribution</th>
+                    </tr>
+        """
+        
+        for word, data in most_frequent:
+            sentiment_class = ('score-positive' if data['average_score'] > 0 else 
+                             'score-negative' if data['average_score'] < 0 else 'score-neutral')
+            
+            pos_pct = data['sentiment_distribution']['positive'] / data['frequency'] * 100
+            neg_pct = data['sentiment_distribution']['negative'] / data['frequency'] * 100
+            neu_pct = data['sentiment_distribution']['neutral'] / data['frequency'] * 100
+            
+            html_content += f"""
+                    <tr>
+                        <td><strong>{word}</strong></td>
+                        <td>{data['frequency']}</td>
+                        <td class="{sentiment_class}">{data['average_score']:.3f}</td>
+                        <td>{data['dominant_sentiment'].title()}</td>
+                        <td>
+                            <small>
+                                Pos: {pos_pct:.0f}% | 
+                                Neg: {neg_pct:.0f}% | 
+                                Neu: {neu_pct:.0f}%
+                            </small>
+                        </td>
+                    </tr>
+            """
+        
+        html_content += """
+                </table>
+            </div>
+            
+            <div class="keyword-section">
+                <h2>🎯 Keyword Scoring Methodology</h2>
+                <div class="keyword-detail">
+                    <h3>Multi-Method Scoring Approach</h3>
+                    <p>Each keyword receives a sentiment score based on multiple analysis methods:</p>
+                    <ul>
+                        <li><strong>Custom Sports Lexicon (40%):</strong> Domain-specific sentiment scores for sports/sponsorship terms</li>
+                        <li><strong>VADER Lexicon (30%):</strong> Social media optimized sentiment scores</li>
+                        <li><strong>Context Analysis (30%):</strong> Sentiment of surrounding words and phrases</li>
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>Confidence Scoring</h3>
+                    <p>Confidence levels indicate reliability of sentiment scores:</p>
+                    <ul>
+                        <li><strong class="score-positive">High Confidence (0.7+):</strong> Word appears 7+ times, consistent sentiment pattern</li>
+                        <li><strong style="color: #ffc107;">Medium Confidence (0.4-0.7):</strong> Word appears 4-6 times, mostly consistent</li>
+                        <li><strong class="score-negative">Low Confidence (<0.4):</strong> Word appears 2-3 times, may have mixed usage</li>
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>Score Interpretation</h3>
+                    <ul>
+                        <li><strong class="score-positive">+1.5 to +2.0:</strong> Very strong positive sentiment (amazing, incredible, perfect)</li>
+                        <li><strong class="score-positive">+0.5 to +1.4:</strong> Positive sentiment (good, great, excited, smart)</li>
+                        <li><strong class="score-neutral">-0.4 to +0.4:</strong> Neutral/factual (announced, deal, contract, million)</li>
+                        <li><strong class="score-negative">-1.4 to -0.5:</strong> Negative sentiment (bad, disappointing, waste)</li>
+                        <li><strong class="score-negative">-2.0 to -1.5:</strong> Very strong negative sentiment (disgusting, betrayal, outrageous)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="keyword-section">
+                <h2>📈 Key Insights for Sponsorship Communications</h2>
+                <div class="keyword-detail">
+                    <h3>🟢 Leverage Positive Language</h3>
+                    <p>Use these high-impact positive words in sponsorship announcements:</p>
+                    <ul>
+        """
+        
+        # Add top positive words as recommendations
+        for word, data in top_positive[:5]:
+            html_content += f"<li><strong>{word}</strong> (Score: +{data['average_score']:.2f}) - Use in context of {self.detailed_lexicon.get(word, {}).get('context', 'general').replace('_', ' ')}</li>"
+        
+        html_content += """
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>🔴 Avoid Negative Triggers</h3>
+                    <p>Be careful with these words that trigger negative sentiment:</p>
+                    <ul>
+        """
+        
+        # Add top negative words as warnings
+        for word, data in top_negative[:5]:
+            html_content += f"<li><strong>{word}</strong> (Score: {data['average_score']:.2f}) - Often associated with {self.detailed_lexicon.get(word, {}).get('context', 'general').replace('_', ' ')}</li>"
+        
+        html_content += """
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>💡 Strategic Recommendations</h3>
+                    <ul>
+                        <li><strong>Frame partnerships positively:</strong> Use words like "partnership," "collaboration," "investment" rather than just "deal" or "contract"</li>
+                        <li><strong>Emphasize mutual benefits:</strong> Highlight "support," "commitment," and "shared values"</li>
+                        <li><strong>Address tradition concerns:</strong> When discussing naming rights, acknowledge "history" while emphasizing "future" and "growth"</li>
+                        <li><strong>Avoid commercial language:</strong> Minimize words like "commercial," "corporate," or "money-grab" in communications</li>
+                        <li><strong>Use emotional positive terms:</strong> Words like "excited," "proud," and "amazing" generate strong positive responses</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="keyword-section">
+                <h2>📊 Interactive Visualizations</h2>
+                <p>For detailed interactive analysis, see:</p>
+                <ul>
+                    <li><a href="keyword_sentiment_dashboard.html">Interactive Keyword Dashboard</a> - Explore all keywords with filtering and drill-down</li>
+                    <li><a href="keyword_sentiment_static.png">Static Visualization</a> - Summary charts and word clouds</li>
+                </ul>
+            </div>
+            
         </body>
         </html>
         """
@@ -389,79 +791,173 @@ class SentimentKeywordAnalyzer:
         # Save report
         import os
         os.makedirs(output_dir, exist_ok=True)
-        with open(f'{output_dir}/keyword_analysis_report.html', 'w', encoding='utf-8') as f:
+        with open(f'{output_dir}/keyword_sentiment_report.html', 'w', encoding='utf-8') as f:
             f.write(html_content)
         
-        # Also save raw data as CSV for further analysis
-        self._save_keyword_data(sentiment_keywords, keyword_freq, output_dir)
+        # Save keyword data as CSV for further analysis
+        self._save_keyword_data_csv(output_dir)
         
-        logger.info(f"Keyword analysis report saved to {output_dir}/keyword_analysis_report.html")
+        logger.info(f"Keyword sentiment report saved to {output_dir}/keyword_sentiment_report.html")
         
         return {
-            'sentiment_keywords': sentiment_keywords,
-            'keyword_freq': keyword_freq,
-            'representative_posts': representative_posts,
-            'sponsorship_keywords': sponsorship_keywords
+            'total_keywords': total_keywords,
+            'positive_keywords': positive_keywords,
+            'negative_keywords': negative_keywords,
+            'top_positive': top_positive,
+            'top_negative': top_negative,
+            'most_frequent': most_frequent
         }
     
-    def _save_keyword_data(self, sentiment_keywords, keyword_freq, output_dir):
-        """Save keyword data as CSV files for further analysis"""
+    def _save_keyword_data_csv(self, output_dir):
+        """Save detailed keyword data as CSV files"""
         
-        # Save sentiment keywords
-        sentiment_kw_data = []
-        for sentiment, data in sentiment_keywords.items():
-            for i, keyword in enumerate(data['keywords']):
-                sentiment_kw_data.append({
-                    'sentiment': sentiment,
-                    'keyword': keyword,
-                    'chi2_score': data['scores'][i],
-                    'p_value': data['p_values'][i],
-                    'rank': i + 1
+        # Main keyword data
+        keyword_data = []
+        for word, data in self.keyword_scores.items():
+            keyword_data.append({
+                'keyword': word,
+                'average_sentiment_score': data['average_score'],
+                'frequency': data['frequency'],
+                'confidence': data['confidence'],
+                'lexicon_score': data['lexicon_score'],
+                'vader_score': data['vader_score'],
+                'dominant_sentiment': data['dominant_sentiment'],
+                'positive_contexts': data['sentiment_distribution']['positive'],
+                'negative_contexts': data['sentiment_distribution']['negative'],
+                'neutral_contexts': data['sentiment_distribution']['neutral'],
+                'total_score_contribution': data['total_score'],
+                'sentiment_category': self.detailed_lexicon.get(word, {}).get('category', 'unknown'),
+                'context_type': self.detailed_lexicon.get(word, {}).get('context', 'general')
+            })
+        
+        keyword_df = pd.DataFrame(keyword_data)
+        keyword_df = keyword_df.sort_values('average_sentiment_score', key=abs, ascending=False)
+        keyword_df.to_csv(f'{output_dir}/detailed_keyword_sentiments.csv', index=False)
+        
+        # Phrase data if available
+        if self.phrase_scores:
+            phrase_data = []
+            for phrase, data in self.phrase_scores.items():
+                phrase_data.append({
+                    'phrase': phrase,
+                    'sentiment_score': data['score'],
+                    'phrase_type': data['type'],
+                    'frequency': data['frequency']
                 })
+            
+            phrase_df = pd.DataFrame(phrase_data)
+            phrase_df = phrase_df.sort_values('sentiment_score', key=abs, ascending=False)
+            phrase_df.to_csv(f'{output_dir}/phrase_sentiments.csv', index=False)
         
-        pd.DataFrame(sentiment_kw_data).to_csv(f'{output_dir}/sentiment_keywords.csv', index=False)
+        # Summary statistics
+        summary_stats = {
+            'total_keywords_analyzed': len(self.keyword_scores),
+            'positive_keywords_count': len([k for k, v in self.keyword_scores.items() if v['average_score'] > 0]),
+            'negative_keywords_count': len([k for k, v in self.keyword_scores.items() if v['average_score'] < 0]),
+            'neutral_keywords_count': len([k for k, v in self.keyword_scores.items() if abs(v['average_score']) <= 0.1]),
+            'high_confidence_keywords': len([k for k, v in self.keyword_scores.items() if v['confidence'] > 0.7]),
+            'average_sentiment_score': np.mean([v['average_score'] for v in self.keyword_scores.values()]),
+            'most_positive_keyword': max(self.keyword_scores.items(), key=lambda x: x[1]['average_score'])[0],
+            'most_negative_keyword': min(self.keyword_scores.items(), key=lambda x: x[1]['average_score'])[0],
+            'most_frequent_keyword': max(self.keyword_scores.items(), key=lambda x: x[1]['frequency'])[0]
+        }
         
-        # Save frequency data
-        freq_data = []
-        for sentiment, keywords in keyword_freq.items():
-            for keyword, freq in keywords:
-                freq_data.append({
-                    'sentiment': sentiment,
-                    'keyword': keyword,
-                    'frequency': freq
-                })
+        pd.DataFrame([summary_stats]).to_csv(f'{output_dir}/keyword_analysis_summary.csv', index=False)
         
-        pd.DataFrame(freq_data).to_csv(f'{output_dir}/keyword_frequencies.csv', index=False)
-        
-        logger.info(f"Keyword data saved to {output_dir}/")
+        logger.info(f"Keyword data saved to CSV files in {output_dir}/")
 
-# Example usage function to integrate with your main script
-def analyze_sentiment_drivers(df, output_dir='results'):
+
+def analyze_keyword_sentiments_comprehensive(df, config=None, output_dir='results'):
     """
-    Main function to analyze what drives sentiment in your sponsorship data
+    Main function to perform comprehensive keyword sentiment analysis
     
     Args:
         df: DataFrame with sentiment analysis results
+        config: Configuration object (optional)
         output_dir: Directory to save outputs
     
     Returns:
-        Dictionary with all analysis results
+        Dictionary with analysis results and file paths
     """
     
-    # Initialize analyzer
-    analyzer = SentimentKeywordAnalyzer(df)
+    logger.info("🚀 Starting Comprehensive Keyword Sentiment Analysis...")
+    logger.info("="*60)
     
-    # Create word clouds
-    analyzer.create_sentiment_wordclouds(output_dir)
+    # Initialize analyzer
+    analyzer = KeywordSentimentScorer(df, config)
+    
+    # Perform analysis
+    keyword_scores, phrase_scores = analyzer.analyze_keyword_sentiments()
+    
+    # Create visualizations
+    analyzer.create_keyword_sentiment_visualization(output_dir)
     
     # Generate comprehensive report
-    results = analyzer.generate_keyword_report(output_dir)
+    report_results = analyzer.generate_keyword_sentiment_report(output_dir)
     
-    print("\\n🔍 KEYWORD & POST ANALYSIS COMPLETE")
-    print("="*50)
-    print(f"📊 Reports saved to {output_dir}/")
-    print(f"📈 Word clouds: sentiment_wordclouds.png")
-    print(f"📄 Detailed report: keyword_analysis_report.html")
-    print(f"📋 Raw data: sentiment_keywords.csv, keyword_frequencies.csv")
+    logger.info("="*60)
+    logger.info("✅ Comprehensive Keyword Sentiment Analysis Complete!")
+    logger.info(f"📊 Analyzed {len(keyword_scores)} unique keywords")
+    logger.info(f"🟢 Positive keywords: {report_results['positive_keywords']}")
+    logger.info(f"🔴 Negative keywords: {report_results['negative_keywords']}")
     
-    return results
+    # Safe access to top keywords with error handling
+    if report_results['top_positive']:
+        top_pos_word = report_results['top_positive'][0][0]
+        top_pos_score = report_results['top_positive'][0][1]['average_score']
+        logger.info(f"📈 Most positive: '{top_pos_word}' (+{top_pos_score:.3f})")
+    else:
+        logger.info("📈 Most positive: No positive keywords found")
+    
+    if report_results['top_negative']:
+        top_neg_word = report_results['top_negative'][0][0]
+        top_neg_score = report_results['top_negative'][0][1]['average_score']
+        logger.info(f"📉 Most negative: '{top_neg_word}' ({top_neg_score:.3f})")
+    else:
+        logger.info("📉 Most negative: No negative keywords found")
+    
+    logger.info("="*60)
+    logger.info(f"📁 Reports generated:")
+    logger.info(f"   🌐 Interactive: {output_dir}/keyword_sentiment_dashboard.html")
+    logger.info(f"   📄 Detailed Report: {output_dir}/keyword_sentiment_report.html")
+    logger.info(f"   📊 Static Charts: {output_dir}/keyword_sentiment_static.png")
+    logger.info(f"   📋 Data Files: {output_dir}/detailed_keyword_sentiments.csv")
+    logger.info("="*60)
+    
+    return {
+        'keyword_scores': keyword_scores,
+        'phrase_scores': phrase_scores,
+        'report_summary': report_results,
+        'output_files': {
+            'interactive_dashboard': f'{output_dir}/keyword_sentiment_dashboard.html',
+            'detailed_report': f'{output_dir}/keyword_sentiment_report.html',
+            'static_visualization': f'{output_dir}/keyword_sentiment_static.png',
+            'keyword_data_csv': f'{output_dir}/detailed_keyword_sentiments.csv',
+            'phrase_data_csv': f'{output_dir}/phrase_sentiments.csv',
+            'summary_csv': f'{output_dir}/keyword_analysis_summary.csv'
+        }
+    }
+
+
+# Usage example and feature summary
+print("📊 ADVANCED KEYWORD SENTIMENT SCORER READY!")
+print("="*60)
+print("✨ Advanced Features:")
+print("   🎯 Individual keyword sentiment scoring")
+print("   📈 Multi-method scoring (Custom + VADER + Context)")
+print("   🔍 Confidence levels based on frequency")
+print("   📊 Interactive visualizations with Plotly")
+print("   📄 Comprehensive HTML reports")
+print("   💾 Detailed CSV exports for further analysis")
+print("\\n🔬 Scoring Methods:")
+print("   • Custom Sports Sponsorship Lexicon (40% weight)")
+print("   • VADER Social Media Lexicon (30% weight)")
+print("   • Contextual Analysis (30% weight)")
+print("\\n📈 Outputs:")
+print("   • Word-level sentiment scores (-2.0 to +2.0)")
+print("   • Confidence ratings (0.0 to 1.0)")
+print("   • Frequency analysis")
+print("   • Context categorization")
+print("   • Strategic recommendations")
+print("\\n💡 Use: analyze_keyword_sentiments_comprehensive(df)")
+print("="*60)

@@ -1,0 +1,544 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Keyword Sentiment Analysis Report</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+                .header { background-color: #f4f4f4; padding: 20px; border-radius: 10px; text-align: center; }
+                .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+                .metric-card { background: #e8f4f8; padding: 15px; border-radius: 8px; text-align: center; }
+                .metric-value { font-size: 2em; font-weight: bold; color: #007bff; }
+                .keyword-section { margin: 20px 0; padding: 15px; border-radius: 8px; }
+                .positive { background-color: #d4edda; border-left: 4px solid #28a745; }
+                .negative { background-color: #f8d7da; border-left: 4px solid #dc3545; }
+                .neutral { background-color: #e2e3e5; border-left: 4px solid #6c757d; }
+                .keyword-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+                .keyword-table th, .keyword-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                .keyword-table th { background-color: #f2f2f2; }
+                .score-positive { color: #28a745; font-weight: bold; }
+                .score-negative { color: #dc3545; font-weight: bold; }
+                .score-neutral { color: #6c757d; font-weight: bold; }
+                .confidence-high { background-color: #d4edda; }
+                .confidence-medium { background-color: #fff3cd; }
+                .confidence-low { background-color: #f8d7da; }
+                .keyword-detail { background-color: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🔍 Keyword Sentiment Analysis Report</h1>
+                <h2>Individual Word and Phrase Sentiment Scoring</h2>
+                <p>Understanding which words drive positive and negative sentiment in sports sponsorship discussions</p>
+            </div>
+            
+            <div class="summary">
+                <div class="metric-card">
+                    <div class="metric-value">2445</div>
+                    <div>Total Keywords Analyzed</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #28a745;">805</div>
+                    <div>Positive Keywords</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #dc3545;">350</div>
+                    <div>Negative Keywords</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #6c757d;">1290</div>
+                    <div>Neutral Keywords</div>
+                </div>
+            </div>
+        
+            <div class="keyword-section positive">
+                <h2>🟢 Top Positive Sentiment Keywords</h2>
+                <p>Words that most strongly contribute to positive sentiment in sponsorship discussions:</p>
+                <table class="keyword-table">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Sentiment Score</th>
+                        <th>Frequency</th>
+                        <th>Confidence</th>
+                        <th>Context</th>
+                    </tr>
+        
+                    <tr class="confidence-low">
+                        <td><strong>brilliant</strong></td>
+                        <td class="score-positive">+1.830</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>Admiration</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>amazing</strong></td>
+                        <td class="score-positive">+1.820</td>
+                        <td>3</td>
+                        <td>0.30</td>
+                        <td>Enthusiasm</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>perfect</strong></td>
+                        <td class="score-positive">+1.730</td>
+                        <td>2</td>
+                        <td>0.20</td>
+                        <td>Satisfaction</td>
+                    </tr>
+            
+                    <tr class="confidence-medium">
+                        <td><strong>love</strong></td>
+                        <td class="score-positive">+1.659</td>
+                        <td>7</td>
+                        <td>0.70</td>
+                        <td>Emotion</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>excellent</strong></td>
+                        <td class="score-positive">+1.647</td>
+                        <td>2</td>
+                        <td>0.20</td>
+                        <td>Quality</td>
+                    </tr>
+            
+                    <tr class="confidence-medium">
+                        <td><strong>great</strong></td>
+                        <td class="score-positive">+1.641</td>
+                        <td>5</td>
+                        <td>0.50</td>
+                        <td>General Approval</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>fantastic</strong></td>
+                        <td class="score-positive">+1.635</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>Enthusiasm</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>happy</strong></td>
+                        <td class="score-positive">+1.550</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>Emotion</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>impressive</strong></td>
+                        <td class="score-positive">+1.470</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>Admiration</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>successful</strong></td>
+                        <td class="score-positive">+1.465</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>Achievement</td>
+                    </tr>
+            
+                </table>
+            </div>
+            
+            <div class="keyword-section negative">
+                <h2>🔴 Top Negative Sentiment Keywords</h2>
+                <p>Words that most strongly contribute to negative sentiment in sponsorship discussions:</p>
+                <table class="keyword-table">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Sentiment Score</th>
+                        <th>Frequency</th>
+                        <th>Confidence</th>
+                        <th>Context</th>
+                    </tr>
+        
+                    <tr class="confidence-low">
+                        <td><strong>bad</strong></td>
+                        <td class="score-negative">-1.360</td>
+                        <td>2</td>
+                        <td>0.20</td>
+                        <td>General Disapproval</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>ridiculous</strong></td>
+                        <td class="score-negative">-1.150</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>Absurdity</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>poor</strong></td>
+                        <td class="score-negative">-1.110</td>
+                        <td>2</td>
+                        <td>0.20</td>
+                        <td>Quality</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>disgusted</strong></td>
+                        <td class="score-negative">-1.020</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>illegal</strong></td>
+                        <td class="score-negative">-0.930</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>frustrated</strong></td>
+                        <td class="score-negative">-0.930</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>dismal</strong></td>
+                        <td class="score-negative">-0.900</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>death</strong></td>
+                        <td class="score-negative">-0.870</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>disappointment</strong></td>
+                        <td class="score-negative">-0.870</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                    <tr class="confidence-low">
+                        <td><strong>devastated</strong></td>
+                        <td class="score-negative">-0.840</td>
+                        <td>1</td>
+                        <td>0.10</td>
+                        <td>General</td>
+                    </tr>
+            
+                </table>
+            </div>
+            
+            <div class="keyword-section neutral">
+                <h2>📊 Most Frequently Used Keywords</h2>
+                <p>Words that appear most often in sponsorship discussions:</p>
+                <table class="keyword-table">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Frequency</th>
+                        <th>Sentiment Score</th>
+                        <th>Dominant Sentiment</th>
+                        <th>Distribution</th>
+                    </tr>
+        
+                    <tr>
+                        <td><strong>partnership</strong></td>
+                        <td>16</td>
+                        <td class="score-positive">0.246</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 62% | 
+                                Neg: 0% | 
+                                Neu: 38%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>fans</strong></td>
+                        <td>15</td>
+                        <td class="score-positive">0.011</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 67% | 
+                                Neg: 20% | 
+                                Neu: 13%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>league</strong></td>
+                        <td>15</td>
+                        <td class="score-negative">-0.004</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 60% | 
+                                Neg: 7% | 
+                                Neu: 33%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>team</strong></td>
+                        <td>14</td>
+                        <td class="score-positive">0.021</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 71% | 
+                                Neg: 7% | 
+                                Neu: 21%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>players</strong></td>
+                        <td>13</td>
+                        <td class="score-positive">0.032</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 85% | 
+                                Neg: 15% | 
+                                Neu: 0%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>like</strong></td>
+                        <td>13</td>
+                        <td class="score-positive">0.803</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 77% | 
+                                Neg: 8% | 
+                                Neu: 15%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>game</strong></td>
+                        <td>13</td>
+                        <td class="score-negative">-0.069</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 92% | 
+                                Neg: 8% | 
+                                Neu: 0%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>https</strong></td>
+                        <td>13</td>
+                        <td class="score-positive">0.006</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 69% | 
+                                Neg: 15% | 
+                                Neu: 15%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>sports</strong></td>
+                        <td>12</td>
+                        <td class="score-negative">-0.008</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 58% | 
+                                Neg: 17% | 
+                                Neu: 25%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>would</strong></td>
+                        <td>12</td>
+                        <td class="score-positive">0.012</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 67% | 
+                                Neg: 8% | 
+                                Neu: 25%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>last</strong></td>
+                        <td>12</td>
+                        <td class="score-positive">0.001</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 75% | 
+                                Neg: 0% | 
+                                Neu: 25%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>new</strong></td>
+                        <td>11</td>
+                        <td class="score-positive">0.044</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 82% | 
+                                Neg: 9% | 
+                                Neu: 9%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>nba</strong></td>
+                        <td>11</td>
+                        <td class="score-positive">0.029</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 73% | 
+                                Neg: 9% | 
+                                Neu: 18%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>year</strong></td>
+                        <td>11</td>
+                        <td class="score-positive">0.002</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 100% | 
+                                Neg: 0% | 
+                                Neu: 0%
+                            </small>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td><strong>best</strong></td>
+                        <td>11</td>
+                        <td class="score-positive">1.223</td>
+                        <td>Positive</td>
+                        <td>
+                            <small>
+                                Pos: 100% | 
+                                Neg: 0% | 
+                                Neu: 0%
+                            </small>
+                        </td>
+                    </tr>
+            
+                </table>
+            </div>
+            
+            <div class="keyword-section">
+                <h2>🎯 Keyword Scoring Methodology</h2>
+                <div class="keyword-detail">
+                    <h3>Multi-Method Scoring Approach</h3>
+                    <p>Each keyword receives a sentiment score based on multiple analysis methods:</p>
+                    <ul>
+                        <li><strong>Custom Sports Lexicon (40%):</strong> Domain-specific sentiment scores for sports/sponsorship terms</li>
+                        <li><strong>VADER Lexicon (30%):</strong> Social media optimized sentiment scores</li>
+                        <li><strong>Context Analysis (30%):</strong> Sentiment of surrounding words and phrases</li>
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>Confidence Scoring</h3>
+                    <p>Confidence levels indicate reliability of sentiment scores:</p>
+                    <ul>
+                        <li><strong class="score-positive">High Confidence (0.7+):</strong> Word appears 7+ times, consistent sentiment pattern</li>
+                        <li><strong style="color: #ffc107;">Medium Confidence (0.4-0.7):</strong> Word appears 4-6 times, mostly consistent</li>
+                        <li><strong class="score-negative">Low Confidence (<0.4):</strong> Word appears 2-3 times, may have mixed usage</li>
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>Score Interpretation</h3>
+                    <ul>
+                        <li><strong class="score-positive">+1.5 to +2.0:</strong> Very strong positive sentiment (amazing, incredible, perfect)</li>
+                        <li><strong class="score-positive">+0.5 to +1.4:</strong> Positive sentiment (good, great, excited, smart)</li>
+                        <li><strong class="score-neutral">-0.4 to +0.4:</strong> Neutral/factual (announced, deal, contract, million)</li>
+                        <li><strong class="score-negative">-1.4 to -0.5:</strong> Negative sentiment (bad, disappointing, waste)</li>
+                        <li><strong class="score-negative">-2.0 to -1.5:</strong> Very strong negative sentiment (disgusting, betrayal, outrageous)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="keyword-section">
+                <h2>📈 Key Insights for Sponsorship Communications</h2>
+                <div class="keyword-detail">
+                    <h3>🟢 Leverage Positive Language</h3>
+                    <p>Use these high-impact positive words in sponsorship announcements:</p>
+                    <ul>
+        <li><strong>brilliant</strong> (Score: +1.83) - Use in context of admiration</li><li><strong>amazing</strong> (Score: +1.82) - Use in context of enthusiasm</li><li><strong>perfect</strong> (Score: +1.73) - Use in context of satisfaction</li><li><strong>love</strong> (Score: +1.66) - Use in context of emotion</li><li><strong>excellent</strong> (Score: +1.65) - Use in context of quality</li>
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>🔴 Avoid Negative Triggers</h3>
+                    <p>Be careful with these words that trigger negative sentiment:</p>
+                    <ul>
+        <li><strong>bad</strong> (Score: -1.36) - Often associated with general disapproval</li><li><strong>ridiculous</strong> (Score: -1.15) - Often associated with absurdity</li><li><strong>poor</strong> (Score: -1.11) - Often associated with quality</li><li><strong>disgusted</strong> (Score: -1.02) - Often associated with general</li><li><strong>illegal</strong> (Score: -0.93) - Often associated with general</li>
+                    </ul>
+                </div>
+                
+                <div class="keyword-detail">
+                    <h3>💡 Strategic Recommendations</h3>
+                    <ul>
+                        <li><strong>Frame partnerships positively:</strong> Use words like "partnership," "collaboration," "investment" rather than just "deal" or "contract"</li>
+                        <li><strong>Emphasize mutual benefits:</strong> Highlight "support," "commitment," and "shared values"</li>
+                        <li><strong>Address tradition concerns:</strong> When discussing naming rights, acknowledge "history" while emphasizing "future" and "growth"</li>
+                        <li><strong>Avoid commercial language:</strong> Minimize words like "commercial," "corporate," or "money-grab" in communications</li>
+                        <li><strong>Use emotional positive terms:</strong> Words like "excited," "proud," and "amazing" generate strong positive responses</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="keyword-section">
+                <h2>📊 Interactive Visualizations</h2>
+                <p>For detailed interactive analysis, see:</p>
+                <ul>
+                    <li><a href="keyword_sentiment_dashboard.html">Interactive Keyword Dashboard</a> - Explore all keywords with filtering and drill-down</li>
+                    <li><a href="keyword_sentiment_static.png">Static Visualization</a> - Summary charts and word clouds</li>
+                </ul>
+            </div>
+            
+        </body>
+        </html>
+        

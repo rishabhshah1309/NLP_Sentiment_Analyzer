@@ -1,0 +1,1197 @@
+{
+  "2025-06-08T17:53:20.424559": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 597.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal fan reaction": {
+        "matches": 2,
+        "avg_relevance": 0.4,
+        "avg_engagement": 597.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "ESPN jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.25,
+        "avg_engagement": 597.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Reddit stadium naming rights": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 284.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 284.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement social media": {
+        "matches": 2,
+        "avg_relevance": 0.5,
+        "avg_engagement": 373.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Reddit partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 284.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 597.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal social media": {
+        "matches": 2,
+        "avg_relevance": 0.8,
+        "avg_engagement": 597.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "ESPN Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 0.75,
+        "avg_engagement": 597.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 284.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Bleacher Report Adidas football partnership": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction fan reaction": {
+        "matches": 3,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 493.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      }
+    }
+  },
+  "2025-06-08T17:56:59.764849": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 410.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Bleacher Report jersey sponsorship deal": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights social media": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter stadium naming rights": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement financial analysis": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Twitter partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 410.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal fan reaction": {
+        "matches": 2,
+        "avg_relevance": 0.9,
+        "avg_engagement": 410.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Bleacher Report Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 0.6,
+        "avg_engagement": 410.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership fan reaction": {
+        "matches": 2,
+        "avg_relevance": 0.4,
+        "avg_engagement": 260.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Reddit Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter Emirates stadium sponsorship": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 214.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "sponsorship reaction": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 307.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "sponsorship reaction fan reaction": {
+        "matches": 3,
+        "avg_relevance": 0.4444444444444444,
+        "avg_engagement": 345.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      }
+    }
+  },
+  "2025-06-08T18:01:36.668775": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 676.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal controversy": {
+        "matches": 2,
+        "avg_relevance": 0.375,
+        "avg_engagement": 676.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Twitter jersey sponsorship deal": {
+        "matches": 3,
+        "avg_relevance": 0.25,
+        "avg_engagement": 537.6666666666666,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights controversy": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 663.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Bleacher Report stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement fan reaction": {
+        "matches": 3,
+        "avg_relevance": 0.4166666666666667,
+        "avg_engagement": 537.6666666666666,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      },
+      "Twitter partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 676.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal controversy": {
+        "matches": 2,
+        "avg_relevance": 0.875,
+        "avg_engagement": 676.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Twitter Nike NBA deal": {
+        "matches": 3,
+        "avg_relevance": 0.5833333333333334,
+        "avg_engagement": 537.6666666666666,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership financial analysis": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship social media": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter Emirates stadium sponsorship": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "sponsorship reaction": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction financial analysis": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      }
+    }
+  },
+  "2025-06-08T18:04:04.009636": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 417.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Bleacher Report jersey sponsorship deal": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights controversy": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Bleacher Report stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 697.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement fan reaction": {
+        "matches": 3,
+        "avg_relevance": 0.4166666666666667,
+        "avg_engagement": 510.6666666666667,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      },
+      "Reddit partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 697.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 417.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal social media": {
+        "matches": 2,
+        "avg_relevance": 0.8,
+        "avg_engagement": 417.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Twitter Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 0.75,
+        "avg_engagement": 417.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 697.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership financial analysis": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 697.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship social media": {
+        "matches": 1,
+        "avg_relevance": 0.4,
+        "avg_engagement": 371.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Twitter Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction social media": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 371.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      }
+    }
+  },
+  "2025-06-08T18:11:24.641997": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 351.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal fan reaction": {
+        "matches": 2,
+        "avg_relevance": 0.4,
+        "avg_engagement": 351.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Twitter jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.25,
+        "avg_engagement": 351.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights financial analysis": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Twitter stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 236.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement social media": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 236.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Reddit partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 236.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 351.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal news coverage": {
+        "matches": 2,
+        "avg_relevance": 0.8,
+        "avg_engagement": 351.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "ESPN Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 0.75,
+        "avg_engagement": 351.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 236.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership fan reaction": {
+        "matches": 1,
+        "avg_relevance": 0.4,
+        "avg_engagement": 236.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Bleacher Report Adidas football partnership": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship news coverage": {
+        "matches": 1,
+        "avg_relevance": 0.4,
+        "avg_engagement": 265.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Twitter Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction financial analysis": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      }
+    }
+  },
+  "2025-06-08T18:14:16.587071": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 527.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal controversy": {
+        "matches": 2,
+        "avg_relevance": 0.25,
+        "avg_engagement": 527.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Reddit jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.25,
+        "avg_engagement": 527.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights fan reaction": {
+        "matches": 1,
+        "avg_relevance": 0.4,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Bleacher Report stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 599.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement social media": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 599.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "ESPN partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 599.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 527.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal fan reaction": {
+        "matches": 2,
+        "avg_relevance": 0.9,
+        "avg_engagement": 527.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Twitter Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 0.75,
+        "avg_engagement": 527.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 599.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership fan reaction": {
+        "matches": 2,
+        "avg_relevance": 0.4,
+        "avg_engagement": 429.5,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Reddit Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 599.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "ESPN Emirates stadium sponsorship": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 599.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "sponsorship reaction": {
+        "matches": 1,
+        "avg_relevance": 0.5,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "sponsorship reaction controversy": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 260.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      }
+    }
+  },
+  "2025-06-08T18:22:03.631763": {
+    "source": "manual",
+    "metrics": {
+      "jersey sponsorship deal": {
+        "matches": 2,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 653.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "jersey sponsorship deal controversy": {
+        "matches": 2,
+        "avg_relevance": 0.25,
+        "avg_engagement": 653.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Twitter jersey sponsorship deal": {
+        "matches": 3,
+        "avg_relevance": 0.25,
+        "avg_engagement": 695.3333333333334,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 1.0
+      },
+      "stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "stadium naming rights social media": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Reddit stadium naming rights": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 780.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "partnership announcement controversy": {
+        "matches": 1,
+        "avg_relevance": 0.6666666666666666,
+        "avg_engagement": 780.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Twitter partnership announcement": {
+        "matches": 1,
+        "avg_relevance": 1.0,
+        "avg_engagement": 780.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 1.0,
+        "avg_engagement": 653.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Nike NBA deal financial analysis": {
+        "matches": 2,
+        "avg_relevance": 0.8,
+        "avg_engagement": 653.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Bleacher Report Nike NBA deal": {
+        "matches": 2,
+        "avg_relevance": 0.6,
+        "avg_engagement": 653.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.6666666666666666
+      },
+      "Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.3333333333333333,
+        "avg_engagement": 780.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Adidas football partnership controversy": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 780.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Reddit Adidas football partnership": {
+        "matches": 1,
+        "avg_relevance": 0.25,
+        "avg_engagement": 780.0,
+        "platforms": [
+          "reddit"
+        ],
+        "success_rate": 0.3333333333333333
+      },
+      "Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Emirates stadium sponsorship controversy": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "Bleacher Report Emirates stadium sponsorship": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      },
+      "sponsorship reaction news coverage": {
+        "matches": 0,
+        "avg_relevance": 0,
+        "avg_engagement": 0,
+        "platforms": [],
+        "success_rate": 0
+      }
+    }
+  }
+}
