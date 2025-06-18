@@ -1,0 +1,20 @@
+{
+  "total_records": 31,
+  "sentiment_distribution": {
+    "positive": 19,
+    "neutral": 7,
+    "negative": 5
+  },
+  "subreddit_distribution": {
+    "nba": 20,
+    "nfl": 11
+  },
+  "context_distribution": {
+    "general": 23,
+    "advertising": 4,
+    "stadium_naming": 3,
+    "jersey_sponsor": 1
+  },
+  "average_sentiment_score": 0.2675677419354839,
+  "date_range": "2025-05-11 08:28:31 to 2025-05-30 19:12:23"
+}

@@ -1,0 +1,36 @@
+{
+  "analysis_date": "2025-06-03T14:43:43.884928",
+  "total_posts_analyzed": 35,
+  "sentiment_distribution": {
+    "positive": 21,
+    "neutral": 8,
+    "negative": 6
+  },
+  "average_sentiment_scores": {
+    "vader_compound": 0.29209142857142856,
+    "textblob_polarity": 0.09667997935445989,
+    "custom_score": 0.04285714285714286
+  },
+  "sentiment_intensity": {
+    "average": 0.39074285714285717,
+    "strong_sentiment_posts": "7",
+    "subjective_posts": "13"
+  },
+  "aspect_sentiment": {
+    "financial_sentiment": {
+      "positive": 21,
+      "neutral": 8,
+      "negative": 6
+    },
+    "aesthetic_sentiment": {
+      "positive": 21,
+      "neutral": 8,
+      "negative": 6
+    },
+    "brand_sentiment": {
+      "positive": 21,
+      "neutral": 8,
+      "negative": 6
+    }
+  }
+}
